@@ -30,6 +30,10 @@ interface Topsheet {
     _count?: {
         jobs: number;
     };
+    // Computed fields from API
+    grandTotal?: number;
+    totalExpenses?: number;
+    totalProfit?: number;
 }
 
 export default function TopsheetsPage() {
