@@ -19,6 +19,7 @@ interface Plan {
   hasApiAccess: boolean;
   hasCustomBranding: boolean;
   hasPrioritySupport: boolean;
+  isFeatured: boolean;
 }
 
 interface Subscription {
