@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Topsheet Generator Summary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#135bec",
+                "background-light": "#f6f6f8",
+                "background-dark": "#101622",
+                "surface-light": "#ffffff",
+                "surface-dark": "#1a2230",
+                "neutral-50": "#f8f9fc",
+                "neutral-100": "#edf0f7",
+                "neutral-200": "#e0e4ef",
+                "neutral-300": "#c6cde0",
+                "neutral-400": "#9ba6c2",
+                "neutral-500": "#7582a3",
+                "neutral-600": "#5a6685",
+                "neutral-700": "#454f6b",
+                "neutral-800": "#343c52",
+                "neutral-900": "#262c3d",
+              },
+              fontFamily: {
+                "display": ["Inter", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<style>
+        /* Custom scrollbar for webkit browsers to match the clean aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #374151;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-neutral-800 dark:text-neutral-200 font-display h-screen flex flex-col overflow-hidden">
+<!-- Top Navigation / Header -->
+<header class="bg-surface-light dark:bg-surface-dark border-b border-neutral-200 dark:border-neutral-800 h-16 flex items-center justify-between px-6 shrink-0 z-20">
+<div class="flex items-center gap-4">
+<div class="flex items-center text-neutral-500 dark:text-neutral-400 text-sm">
+<span class="hover:text-primary cursor-pointer">Dashboard</span>
+<span class="material-icons text-base mx-1">chevron_right</span>
+<span class="hover:text-primary cursor-pointer">Billing</span>
+<span class="material-icons text-base mx-1">chevron_right</span>
+<span class="font-medium text-neutral-900 dark:text-white">Generate Topsheet</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3">
+<span class="material-icons text-neutral-400 text-lg">calendar_today</span>
+</span>
+<input class="pl-10 pr-3 py-2 text-sm border border-neutral-200 dark:border-neutral-700 rounded-lg bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary w-48" placeholder="Oct 01 - Oct 31, 2023" type="text"/>
+</div>
+<div class="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-icons text-sm">person</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex overflow-hidden">
+<!-- LEFT PANE: Source Data / Selection -->
+<aside class="w-96 bg-surface-light dark:bg-surface-dark border-r border-neutral-200 dark:border-neutral-800 flex flex-col z-10 shadow-sm relative">
+<!-- Pane Header -->
+<div class="p-6 border-b border-neutral-200 dark:border-neutral-800">
+<h2 class="text-lg font-semibold text-neutral-900 dark:text-white mb-1">Selected Jobs</h2>
+<p class="text-xs text-neutral-500 dark:text-neutral-400">Select jobs to include in the topsheet.</p>
+<div class="mt-4 relative">
+<input class="w-full pl-9 pr-3 py-2 text-sm border border-neutral-200 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-900 focus:ring-primary focus:border-primary transition-colors" placeholder="Search job ref..." type="text"/>
+<span class="material-icons absolute left-2.5 top-2.5 text-neutral-400 text-lg">search</span>
+</div>
+</div>
+<!-- Job List -->
+<div class="flex-1 overflow-y-auto p-4 space-y-3">
+<!-- Selected Item -->
+<div class="group relative p-4 rounded-lg border border-primary bg-primary/5 cursor-pointer transition-all">
+<div class="absolute top-3 right-3 text-primary">
+<span class="material-icons">check_circle</span>
+</div>
+<div class="flex justify-between items-start mb-2">
+<div>
+<span class="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">#4023</span>
+<h3 class="font-medium text-neutral-900 dark:text-white mt-1">Global Logistics Setup</h3>
+</div>
+</div>
+<div class="flex justify-between items-end mt-3">
+<span class="text-xs text-neutral-500 dark:text-neutral-400">Oct 12, 2023</span>
+<span class="font-semibold text-neutral-900 dark:text-white">$1,200.00</span>
+</div>
+</div>
+<!-- Selected Item -->
+<div class="group relative p-4 rounded-lg border border-primary bg-primary/5 cursor-pointer transition-all">
+<div class="absolute top-3 right-3 text-primary">
+<span class="material-icons">check_circle</span>
+</div>
+<div class="flex justify-between items-start mb-2">
+<div>
+<span class="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">#4025</span>
+<h3 class="font-medium text-neutral-900 dark:text-white mt-1">Warehouse Mainte...</h3>
+</div>
+</div>
+<div class="flex justify-between items-end mt-3">
+<span class="text-xs text-neutral-500 dark:text-neutral-400">Oct 14, 2023</span>
+<span class="font-semibold text-neutral-900 dark:text-white">$450.50</span>
+</div>
+</div>
+<!-- Selected Item -->
+<div class="group relative p-4 rounded-lg border border-primary bg-primary/5 cursor-pointer transition-all">
+<div class="absolute top-3 right-3 text-primary">
+<span class="material-icons">check_circle</span>
+</div>
+<div class="flex justify-between items-start mb-2">
+<div>
+<span class="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">#4028</span>
+<h3 class="font-medium text-neutral-900 dark:text-white mt-1">Network Cabling Ph1</h3>
+</div>
+</div>
+<div class="flex justify-between items-end mt-3">
+<span class="text-xs text-neutral-500 dark:text-neutral-400">Oct 18, 2023</span>
+<span class="font-semibold text-neutral-900 dark:text-white">$2,800.00</span>
+</div>
+</div>
+<!-- Unselected Item -->
+<div class="group relative p-4 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-600 bg-surface-light dark:bg-surface-dark cursor-pointer transition-all opacity-75 hover:opacity-100">
+<div class="absolute top-3 right-3 text-neutral-300 dark:text-neutral-600">
+<span class="material-icons">radio_button_unchecked</span>
+</div>
+<div class="flex justify-between items-start mb-2">
+<div>
+<span class="text-xs font-semibold text-neutral-500 bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 rounded-full">#4029</span>
+<h3 class="font-medium text-neutral-700 dark:text-neutral-300 mt-1">Office Relocation</h3>
+</div>
+</div>
+<div class="flex justify-between items-end mt-3">
+<span class="text-xs text-neutral-500 dark:text-neutral-400">Oct 19, 2023</span>
+<span class="font-semibold text-neutral-700 dark:text-neutral-300">$850.00</span>
+</div>
+</div>
+</div>
+<!-- Pane Footer Summary -->
+<div class="p-4 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800">
+<div class="flex justify-between items-center mb-1">
+<span class="text-sm text-neutral-500 dark:text-neutral-400">Jobs Selected</span>
+<span class="font-medium text-neutral-900 dark:text-white">3</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-neutral-500 dark:text-neutral-400">Total Source Value</span>
+<span class="text-lg font-bold text-primary">$4,450.50</span>
+</div>
+</div>
+</aside>
+<!-- RIGHT PANE: Preview Area -->
+<section class="flex-1 bg-background-light dark:bg-background-dark flex flex-col relative overflow-hidden">
+<!-- Preview Toolbar -->
+<div class="flex items-center justify-between px-8 py-4 border-b border-neutral-200 dark:border-neutral-800 bg-surface-light dark:bg-surface-dark">
+<h2 class="text-lg font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+<span class="material-icons text-neutral-400">visibility</span> Topsheet Preview
+                </h2>
+<div class="flex gap-2">
+<button class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:text-primary transition-colors bg-neutral-100 dark:bg-neutral-800 rounded-lg hover:bg-primary/10">
+<span class="material-icons text-lg">edit</span> Edit Header
+                    </button>
+<button class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:text-primary transition-colors bg-neutral-100 dark:bg-neutral-800 rounded-lg hover:bg-primary/10">
+<span class="material-icons text-lg">settings</span> Options
+                    </button>
+</div>
+</div>
+<!-- Document Canvas -->
+<div class="flex-1 overflow-y-auto p-8 flex justify-center bg-neutral-100/50 dark:bg-[#0b0f17]">
+<div class="w-full max-w-4xl bg-white dark:bg-surface-dark shadow-lg rounded-sm min-h-[800px] flex flex-col">
+<!-- Top Sheet Header -->
+<div class="p-10 border-b border-neutral-100 dark:border-neutral-800">
+<div class="flex justify-between items-start">
+<div>
+<div class="h-12 w-32 bg-neutral-100 dark:bg-neutral-800 rounded mb-4 flex items-center justify-center text-xs text-neutral-400">
+<img alt="Acme Corporation Logo - generic placeholder" class="rounded object-cover h-full w-full opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwXw-jOwRiy1xWWS8zMgf6rXtaj6paO2D5qNC8x7WRVLB50NBfnV-pJgsrYUT7yztlmX8mtGd3FUPc0TshNXhlaQTRYv8I8W0SCzgf3cfcs7EfapxRdrghNj3p0702mWivcmJvoJXa3cJsUiyuMGRzPkgG2mWhErW183u-2dXqiecrFUrVXNQZM9Btd6Pv5z4zn7rc_jP4lq9Yjbz3gdMBWzZH9EW9eQlDsqGLU1UTp_BPkLo5sFFzfyUCtecTc1s1aNMwzgvLtNOX"/>
+</div>
+<h1 class="text-2xl font-bold text-neutral-900 dark:text-white">TOPSHEET SUMMARY</h1>
+<p class="text-neutral-500 dark:text-neutral-400 mt-1">Reference: TS-2023-10-A</p>
+</div>
+<div class="text-right">
+<h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Bill To:</h3>
+<p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1">TechFlow Solutions Inc.</p>
+<p class="text-sm text-neutral-600 dark:text-neutral-400">4592 Woodland Avenue</p>
+<p class="text-sm text-neutral-600 dark:text-neutral-400">Metairie, LA 70001</p>
+<div class="mt-4">
+<span class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Date:</span>
+<span class="text-sm font-medium text-neutral-900 dark:text-white ml-2">Oct 24, 2023</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Table -->
+<div class="p-10 flex-1">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b-2 border-primary/20">
+<th class="py-3 px-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 w-16">S.No</th>
+<th class="py-3 px-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Bill No</th>
+<th class="py-3 px-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Challan Date</th>
+<th class="py-3 px-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Work Location</th>
+<th class="py-3 px-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Description</th>
+<th class="py-3 px-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="text-sm text-neutral-700 dark:text-neutral-300">
+<tr class="border-b border-neutral-100 dark:border-neutral-800">
+<td class="py-4 px-2">1</td>
+<td class="py-4 px-2 font-medium">INV-2023-001</td>
+<td class="py-4 px-2">12 Oct 2023</td>
+<td class="py-4 px-2 flex items-center gap-1">
+<span class="material-icons text-neutral-400 text-sm">place</span> NY Office
+                                    </td>
+<td class="py-4 px-2 text-neutral-500">Global Logistics Setup</td>
+<td class="py-4 px-2 text-right font-mono">$1,200.00</td>
+</tr>
+<tr class="border-b border-neutral-100 dark:border-neutral-800">
+<td class="py-4 px-2">2</td>
+<td class="py-4 px-2 font-medium">INV-2023-002</td>
+<td class="py-4 px-2">14 Oct 2023</td>
+<td class="py-4 px-2 flex items-center gap-1">
+<span class="material-icons text-neutral-400 text-sm">place</span> Warehouse B
+                                    </td>
+<td class="py-4 px-2 text-neutral-500">Warehouse Maintenance</td>
+<td class="py-4 px-2 text-right font-mono">$450.50</td>
+</tr>
+<tr class="border-b border-neutral-100 dark:border-neutral-800">
+<td class="py-4 px-2">3</td>
+<td class="py-4 px-2 font-medium">INV-2023-005</td>
+<td class="py-4 px-2">18 Oct 2023</td>
+<td class="py-4 px-2 flex items-center gap-1">
+<span class="material-icons text-neutral-400 text-sm">place</span> HQ Server Rm
+                                    </td>
+<td class="py-4 px-2 text-neutral-500">Network Cabling Ph1</td>
+<td class="py-4 px-2 text-right font-mono">$2,800.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Footer Totals -->
+<div class="px-10 py-6 bg-neutral-50 dark:bg-neutral-900/50 rounded-b-sm border-t border-neutral-100 dark:border-neutral-800">
+<div class="flex justify-end">
+<div class="w-64 space-y-3">
+<div class="flex justify-between text-sm text-neutral-600 dark:text-neutral-400">
+<span>Subtotal</span>
+<span class="font-mono">$4,450.50</span>
+</div>
+<div class="flex justify-between text-sm text-neutral-600 dark:text-neutral-400">
+<span>Tax (10%)</span>
+<span class="font-mono">$445.05</span>
+</div>
+<div class="pt-3 border-t border-neutral-200 dark:border-neutral-700 flex justify-between items-center">
+<span class="text-base font-bold text-neutral-900 dark:text-white">Grand Total</span>
+<span class="text-xl font-bold text-primary font-mono">$4,895.55</span>
+</div>
+</div>
+</div>
+<!-- Signature Area (Optional for Topsheet) -->
+<div class="mt-8 pt-8 border-t border-dashed border-neutral-300 dark:border-neutral-700 flex justify-between items-end">
+<div class="text-center w-40">
+<div class="h-10 border-b border-neutral-400 mb-2"></div>
+<span class="text-xs text-neutral-500 uppercase tracking-wide">Prepared By</span>
+</div>
+<div class="text-center w-40">
+<div class="h-10 border-b border-neutral-400 mb-2"></div>
+<span class="text-xs text-neutral-500 uppercase tracking-wide">Authorized Signatory</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Bottom Action Bar -->
+<div class="absolute bottom-0 left-0 right-0 bg-surface-light dark:bg-surface-dark border-t border-neutral-200 dark:border-neutral-800 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-30">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div>
+<button class="text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-white text-sm font-medium px-4 py-2 rounded transition-colors">
+                            Cancel
+                        </button>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 bg-surface-light dark:bg-surface-dark border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800 px-5 py-2.5 rounded-lg font-medium shadow-sm transition-all hover:shadow">
+<span class="material-icons text-green-600 text-xl">table_view</span>
+                            Export as Excel
+                        </button>
+<button class="flex items-center gap-2 bg-primary hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/30">
+<span class="material-icons text-xl">picture_as_pdf</span>
+                            Export as PDF
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

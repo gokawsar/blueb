@@ -1,0 +1,779 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light mode colors */
+  --foreground-rgb: 15, 23, 42;
+  --background-start-rgb: 248, 250, 252;
+  --background-end-rgb: 255, 255, 255;
+  --card-bg: 255, 255, 255;
+  --card-border: 226, 232, 240;
+  --input-bg: 255, 255, 255;
+  --input-border: 203, 213, 225;
+  --muted-bg: 241, 245, 249;
+  --hover-bg: 241, 245, 249;
+  --table-header-bg: 248, 250, 252;
+  --table-row-bg: 255, 255, 255;
+  --table-border: 226, 232, 240;
+}
+
+/* Dark mode colors */
+.dark {
+  --foreground-rgb: 248, 250, 252;
+  --background-start-rgb: 15, 23, 42;
+  --background-end-rgb: 15, 23, 42;
+  --card-bg: 30, 41, 59;
+  --card-border: 51, 65, 85;
+  --input-bg: 30, 41, 59;
+  --input-border: 51, 65, 85;
+  --muted-bg: 30, 41, 59;
+  --hover-bg: 51, 65, 85;
+  --table-header-bg: 30, 41, 59;
+  --table-row-bg: 15, 23, 42;
+  --table-border: 51, 65, 85;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+}
+
+/* Apply dark mode colors to common elements */
+.dark body {
+  background-color: rgb(var(--background-end-rgb));
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: rgb(var(--input-bg));
+  border-color: rgb(var(--input-border));
+  color: rgb(var(--foreground-rgb));
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: 148, 163, 184;
+}
+
+.dark .card {
+  background-color: rgb(var(--card-bg));
+  border-color: rgb(var(--card-border));
+}
+
+.dark .table-header {
+  background-color: rgb(var(--table-header-bg));
+}
+
+.dark .table-row {
+  background-color: rgb(var(--table-row-bg));
+  border-color: rgb(var(--table-border));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* ============================================
+   ADVANCED BUTTON STYLES WITH 3D EFFECTS
+   ============================================ */
+
+/* Base 3D Button Style */
+.btn-3d {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.btn-3d::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  background: inherit;
+  transform: translateZ(-1px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Primary Blue Button */
+.btn-3d-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow:
+    0 4px 6px -1px rgba(59, 130, 246, 0.3),
+    0 2px 4px -2px rgba(59, 130, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-3d-primary::before {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  box-shadow: 0 4px 0 #1e3a8a;
+}
+
+.btn-3d-primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 12px -2px rgba(59, 130, 246, 0.4),
+    0 4px 8px -2px rgba(59, 130, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-3d-primary:hover::before {
+  transform: translateZ(-1px) translateY(2px);
+  box-shadow: 0 6px 0 #1e3a8a;
+}
+
+.btn-3d-primary:active {
+  transform: translateY(0);
+  box-shadow:
+    0 2px 4px -1px rgba(59, 130, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-3d-primary:active::before {
+  transform: translateZ(-1px) translateY(4px);
+  box-shadow: 0 0px 0 #1e3a8a;
+}
+
+/* Secondary Gray Button */
+.btn-3d-secondary {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  color: #475569;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.btn-3d-secondary::before {
+  background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
+  box-shadow: 0 4px 0 #64748b;
+}
+
+.btn-3d-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 12px -2px rgba(0, 0, 0, 0.15),
+    0 4px 8px -2px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.btn-3d-secondary:hover::before {
+  transform: translateZ(-1px) translateY(2px);
+  box-shadow: 0 6px 0 #64748b;
+}
+
+.btn-3d-secondary:active {
+  transform: translateY(0);
+}
+
+.btn-3d-secondary:active::before {
+  transform: translateZ(-1px) translateY(4px);
+  box-shadow: 0 0px 0 #64748b;
+}
+
+/* Dark mode secondary */
+.dark .btn-3d-secondary {
+  background: linear-gradient(135deg, #475569 0%, #334155 100%);
+  color: #f1f5f9;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.dark .btn-3d-secondary::before {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  box-shadow: 0 4px 0 #020617;
+}
+
+/* Success Green Button */
+.btn-3d-success {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+  box-shadow:
+    0 4px 6px -1px rgba(34, 197, 94, 0.3),
+    0 2px 4px -2px rgba(34, 197, 94, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-3d-success::before {
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+  box-shadow: 0 4px 0 #14532d;
+}
+
+.btn-3d-success:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 12px -2px rgba(34, 197, 94, 0.4),
+    0 4px 8px -2px rgba(34, 197, 94, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-3d-success:hover::before {
+  transform: translateZ(-1px) translateY(2px);
+  box-shadow: 0 6px 0 #14532d;
+}
+
+.btn-3d-success:active {
+  transform: translateY(0);
+}
+
+.btn-3d-success:active::before {
+  transform: translateZ(-1px) translateY(4px);
+  box-shadow: 0 0px 0 #14532d;
+}
+
+/* Danger Red Button */
+.btn-3d-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  box-shadow:
+    0 4px 6px -1px rgba(239, 68, 68, 0.3),
+    0 2px 4px -2px rgba(239, 68, 68, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-3d-danger::before {
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  box-shadow: 0 4px 0 #7f1d1d;
+}
+
+.btn-3d-danger:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 12px -2px rgba(239, 68, 68, 0.4),
+    0 4px 8px -2px rgba(239, 68, 68, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-3d-danger:hover::before {
+  transform: translateZ(-1px) translateY(2px);
+  box-shadow: 0 6px 0 #7f1d1d;
+}
+
+.btn-3d-danger:active {
+  transform: translateY(0);
+}
+
+.btn-3d-danger:active::before {
+  transform: translateZ(-1px) translateY(4px);
+  box-shadow: 0 0px 0 #7f1d1d;
+}
+
+/* Warning Yellow Button */
+.btn-3d-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  box-shadow:
+    0 4px 6px -1px rgba(245, 158, 11, 0.3),
+    0 2px 4px -2px rgba(245, 158, 11, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-3d-warning::before {
+  background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
+  box-shadow: 0 4px 0 #78350f;
+}
+
+.btn-3d-warning:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 12px -2px rgba(245, 158, 11, 0.4),
+    0 4px 8px -2px rgba(245, 158, 11, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-3d-warning:hover::before {
+  transform: translateZ(-1px) translateY(2px);
+  box-shadow: 0 6px 0 #78350f;
+}
+
+.btn-3d-warning:active {
+  transform: translateY(0);
+}
+
+.btn-3d-warning:active::before {
+  transform: translateZ(-1px) translateY(4px);
+  box-shadow: 0 0px 0 #78350f;
+}
+
+/* ============================================
+   INTERACTIVE BUTTON ANIMATIONS
+   ============================================ */
+
+/* Pulse Animation for attention */
+@keyframes btn-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+  }
+}
+
+.btn-animate-pulse {
+  animation: btn-pulse 2s infinite;
+}
+
+/* Bounce Animation */
+@keyframes btn-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.btn-animate-bounce {
+  animation: btn-bounce 1s infinite;
+}
+
+/* Shine Effect on hover */
+.btn-animate-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-animate-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.btn-animate-shine:hover::after {
+  left: 100%;
+}
+
+/* Scale Animation on click */
+.btn-animate-scale {
+  transition: transform 0.1s;
+}
+
+.btn-animate-scale:active {
+  transform: scale(0.95);
+}
+
+/* Glow Effect */
+.btn-glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.btn-glow-blue:hover {
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.7);
+}
+
+.btn-glow-green {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+}
+
+.btn-glow-green:hover {
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.7);
+}
+
+.btn-glow-red {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+.btn-glow-red:hover {
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.7);
+}
+
+/* Icon Animation */
+.btn-icon {
+  transition: transform 0.2s ease;
+}
+
+.btn-icon:hover {
+  transform: scale(1.1);
+}
+
+.btn-icon:active {
+  transform: scale(0.95);
+}
+
+/* Loading Spinner */
+@keyframes btn-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.btn-loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid #ffffff;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: btn-spinner 0.75s linear infinite;
+}
+
+/* Dark mode spinner */
+.dark .btn-loading::after {
+  border-color: #ffffff;
+  border-right-color: transparent;
+}
+
+/* Ripple Effect */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 70%
+  );
+  transform: scale(0);
+  opacity: 0;
+  transition:
+    transform 0.5s,
+    opacity 0.3s;
+}
+
+.btn-ripple:active::after {
+  transform: scale(2);
+  opacity: 1;
+  transition:
+    transform 0s,
+    opacity 0s;
+}
+
+/* ============================================
+   COMPACT TABLE ACTION BUTTONS
+   ============================================ */
+
+.table-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.table-action-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 0.375rem;
+  background: inherit;
+  transform: translateZ(-1px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Export Button - Green */
+.table-action-export {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(34, 197, 94, 0.3);
+}
+
+.table-action-export::before {
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+  box-shadow: 0 2px 0 #14532d;
+}
+
+.table-action-export:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(34, 197, 94, 0.4);
+}
+
+.table-action-export:hover::before {
+  transform: translateZ(-1px) translateY(1px);
+  box-shadow: 0 3px 0 #14532d;
+}
+
+.table-action-export:active {
+  transform: translateY(0);
+}
+
+.table-action-export:active::before {
+  transform: translateZ(-1px) translateY(2px);
+  box-shadow: 0 0px 0 #14532d;
+}
+
+/* Delete Button - Red */
+.table-action-delete {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.table-action-delete::before {
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  box-shadow: 0 2px 0 #7f1d1d;
+}
+
+.table-action-delete:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4);
+}
+
+.table-action-delete:hover::before {
+  transform: translateZ(-1px) translateY(1px);
+  box-shadow: 0 3px 0 #7f1d1d;
+}
+
+.table-action-delete:active {
+  transform: translateY(0);
+}
+
+.table-action-delete:active::before {
+  transform: translateZ(-1px) translateY(2px);
+  box-shadow: 0 0px 0 #7f1d1d;
+}
+
+/* Edit Button - Blue */
+.table-action-edit {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.table-action-edit::before {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  box-shadow: 0 2px 0 #1e3a8a;
+}
+
+.table-action-edit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+}
+
+.table-action-edit:hover::before {
+  transform: translateZ(-1px) translateY(1px);
+  box-shadow: 0 3px 0 #1e3a8a;
+}
+
+.table-action-edit:active {
+  transform: translateY(0);
+}
+
+.table-action-edit:active::before {
+  transform: translateZ(-1px) translateY(2px);
+  box-shadow: 0 0px 0 #1e3a8a;
+}
+
+/* ============================================
+   TABLE REFERENCE BUTTON (3D Interactive)
+   For Topsheet No., Job Ref, etc.
+   ============================================ */
+
+.table-ref-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow:
+    0 3px 6px -1px rgba(59, 130, 246, 0.35),
+    0 2px 4px -2px rgba(59, 130, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.table-ref-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateZ(-1px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 0 #1e3a8a;
+}
+
+.table-ref-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 10px -2px rgba(59, 130, 246, 0.45),
+    0 4px 6px -2px rgba(59, 130, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.table-ref-btn:hover::before {
+  transform: translateZ(-1px) translateY(2px);
+  box-shadow: 0 5px 0 #1e3a8a;
+}
+
+.table-ref-btn:active {
+  transform: translateY(0);
+  box-shadow:
+    0 2px 4px -1px rgba(59, 130, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.table-ref-btn:active::before {
+  transform: translateZ(-1px) translateY(3px);
+  box-shadow: 0 0px 0 #1e3a8a;
+}
+
+/* Dark mode table ref button */
+.dark .table-ref-btn {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  box-shadow:
+    0 3px 6px -1px rgba(0, 0, 0, 0.4),
+    0 2px 4px -2px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.dark .table-ref-btn::before {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 3px 0 #1e3a8a;
+}
+
+.dark .table-ref-btn:hover {
+  box-shadow:
+    0 6px 10px -2px rgba(0, 0, 0, 0.5),
+    0 4px 6px -2px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   TOGGLE SWITCH ANIMATIONS
+   ============================================ */
+
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  height: 1.5rem;
+  width: 2.75rem;
+  cursor: pointer;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+  background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-switch::before {
+  content: "";
+  position: absolute;
+  height: 1.25rem;
+  width: 1.25rem;
+  left: 0.125rem;
+  bottom: 0.125rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+  border-radius: 9999px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-switch-active {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 0 12px rgba(34, 197, 94, 0.4);
+}
+
+.toggle-switch-active::before {
+  transform: translateX(1.25rem);
+}
+
+/* Dark mode toggle */
+.dark .toggle-switch {
+  background: linear-gradient(135deg, #475569 0%, #334155 100%);
+}
+
+.dark .toggle-switch::before {
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+}

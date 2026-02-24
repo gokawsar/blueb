@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Square Footage Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            color: #f0f0f0;
+            background-color: #1e1e1e;
+        }
+
+        .sidebar {
+            width: 25%;
+            background-color: #252525;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-right: 1px solid #444;
+        }
+
+        .sidebar h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .saved-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            gap: 5px;
+        }
+
+        .list-item input {
+            background: transparent;
+            border: none;
+            color: #f0f0f0;
+            font-size: 14px;
+            flex-grow: 1;
+            padding: 5px;
+        }
+
+        .list-item input:focus {
+            outline: 1px solid #61dafb;
+            background-color: #1e1e1e;
+        }
+
+        .icon {
+            font-size: 16px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .icon:hover {
+            color: #61dafb;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            min-width: 50px;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background-color: #333;
+            color: #f0f0f0;
+            text-align: center;
+        }
+
+        input[type="number"]:focus {
+            outline: 1px solid #61dafb;
+        }
+
+        button {
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #61dafb;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #52c2e6;
+        }
+
+        .output-box {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #333;
+            border: 1px solid #444;
+            min-height: 50px;
+            color: #f0f0f0;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Saved Lists</h2>
+        <div class="saved-list" id="savedLists"></div>
+        <button onclick="saveToExcel()">Export to Excel</button>
+    </div>
+
+    <div class="content">
+        <h1 class="title">Square Footage Calculator</h1>
+        <div class="input-group">
+            <label>Height:</label>
+            <input type="number" id="heightFeet" placeholder="Feet" tabindex="1">
+            <input type="number" id="heightInches" placeholder="Inches" min="0" max="11" tabindex="2">
+            <label>Width:</label>
+            <input type="number" id="widthFeet" placeholder="Feet" tabindex="3">
+            <input type="number" id="widthInches" placeholder="Inches" min="0" max="11" tabindex="4">
+            <label>Pieces:</label>
+            <input type="number" id="pcs" placeholder="Pcs" value="1" min="1" tabindex="5">
+            <button onclick="calculateSquareFootage()" tabindex="6">Calculate</button>
+            <button onclick="saveList()" tabindex="7">Save</button>
+        </div>
+        <div class="output-box" id="output" contenteditable="true" tabindex="8"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+        let currentList = [];
+        let savedLists = [];
+
+        function calculateSquareFootage() {
+            const heightFeet = parseInt(document.getElementById("heightFeet").value) || 0;
+            const heightInches = parseInt(document.getElementById("heightInches").value) || 0;
+            const widthFeet = parseInt(document.getElementById("widthFeet").value) || 0;
+            const widthInches = parseInt(document.getElementById("widthInches").value) || 0;
+            const pcs = parseInt(document.getElementById("pcs").value) || 1;
+
+            const totalHeight = heightFeet + heightInches / 12;
+            const totalWidth = widthFeet + widthInches / 12;
+            const squareFootage = (totalHeight * totalWidth * pcs).toFixed(2);
+
+            const output = `${heightFeet}'-${heightInches}" x ${widthFeet}'-${widthInches}" x ${pcs}pc = ${squareFootage} sqft`;
+            document.getElementById("output").textContent += output + "\n";
+
+            currentList.push(output);
+
+            // Clear input fields
+            document.getElementById("heightFeet").value = "";
+            document.getElementById("heightInches").value = "";
+            document.getElementById("widthFeet").value = "";
+            document.getElementById("widthInches").value = "";
+            document.getElementById("pcs").value = "1";
+
+            document.getElementById("heightFeet").focus();
+        }
+
+        function saveList() {
+            if (currentList.length > 0) {
+                const listName = `List ${savedLists.length + 1}`;
+                const list = { name: listName, data: [...currentList] };
+                savedLists.push(list);
+                currentList = [];
+                renderSavedLists();
+                document.getElementById("output").textContent = "";
+            }
+        }
+
+        function renderSavedLists() {
+            const savedListsContainer = document.getElementById("savedLists");
+            savedListsContainer.innerHTML = "";
+            savedLists.forEach((list, index) => {
+                const div = document.createElement("div");
+                div.className = "list-item";
+                div.innerHTML = `
+                    <input value="${list.name}" onchange="updateListName(${index}, this.value)">
+                    <span class="icon" onclick="editList(${index})">✏️</span>
+                    <span class="icon" onclick="deleteList(${index})">🗑️</span>
+                `;
+                savedListsContainer.appendChild(div);
+            });
+        }
+
+        function updateListName(index, newName) {
+            savedLists[index].name = newName;
+        }
+
+        function editList(index) {
+            currentList = [...savedLists[index].data];
+            document.getElementById("output").textContent = currentList.join("\n");
+        }
+
+        function deleteList(index) {
+            savedLists.splice(index, 1);
+            renderSavedLists();
+        }
+
+        function saveToExcel() {
+            const wb = XLSX.utils.book_new();
+            savedLists.forEach((list) => {
+                const ws = XLSX.utils.aoa_to_sheet(["Entries", ...list.data.map((item) => [item])]);
+                XLSX.utils.book_append_sheet(wb, ws, list.name);
+            });
+            XLSX.writeFile(wb, "SavedLists.xlsx");
+        }
+    </script>
+</body>
+</html>

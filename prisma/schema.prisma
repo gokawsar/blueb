@@ -1,0 +1,392 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Customer {
+  id          Int      @id @default(autoincrement())
+  name        String
+  contactPerson String?
+  email       String?
+  phone       String?
+  address     String?  @db.Text
+  addressLine1 String?  // First line of address for documents
+  addressLine2 String?  // Second line of address for documents
+  location    String?
+  vatNumber   String?
+  notes       String?  @db.Text
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  jobs        Job[]
+  topsheets   Topsheet[]
+}
+
+model Inventory {
+  id              Int      @id @default(autoincrement())
+  sku             String   @unique
+  name            String   // Changed from VarChar(500) to unlimited Text
+  details         String?  @db.Text
+  unit            String   @db.VarChar(20)
+  itemType        String   @db.VarChar(20) // Supply, Service
+  
+  // Pricing fields
+  buyPrice        Float    @default(0)      // Cost price (purchase price) - for profit calculation
+  standardPrice   Float    @default(0)      // Standard selling price (Max_Unit_Rate)
+  discountedPrice  Float    @default(0)      // Discounted price for auto-fill in bills
+  
+  // VAT & Rate details from CSV
+  vatRate         Float    @default(0)
+  unitRateExVat   Float    @default(0)
+  vatAmount       Float    @default(0)
+  finalRate       Float    @default(0)
+  maxUnitRate     Float    @default(0)
+  discountPercentCsv Float  @default(0)
+  discountAmountCsv Float  @default(0)
+  
+  // Stock
+  stockQuantity   Float    @default(0)
+  minStock        Float    @default(0)
+  
+  // Additional fields
+  category        String?
+  brand           String?
+  model           String?
+  color           String?
+  size            String?
+  weight          Float    @default(0)
+  dimensions      String?
+  supplier        String?
+  origin          String?
+  barcode         String?
+  hsnCode         String?
+  
+  // Pricing tiers
+  wholesalePrice  Float    @default(0)
+  retailPrice    Float    @default(0)
+  onlinePrice    Float    @default(0)
+  
+  // Status
+  isActive        Boolean  @default(true)
+  remarks         String?  @db.Text
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([sku])
+  @@index([name])
+  @@index([itemType])
+}
+
+model Job {
+  id              Int      @id @default(autoincrement())
+  refNumber       String   @unique
+  subject         String
+  jobDetail       String?  // Separate job detail from subject
+  date            DateTime @db.Date
+  status          String   // QUOTATION, CHALLAN, BILL
+  
+  // Topsheet relation
+  topsheetId      Int?
+  topsheet        Topsheet? @relation(fields: [topsheetId], references: [id])
+  
+  // Customer relation
+  customerId      Int
+  customer        Customer @relation(fields: [customerId], references: [id])
+  
+  // Location
+  workLocation    String?  @db.Text
+  
+  // Financials
+  subtotal        Float    @default(0)
+  totalVat        Float    @default(0)
+  totalAmount     Float    @default(0)  // Grand Total from job items
+  totalExpenses   Float    @default(0)  // Total expenses for this job
+  expectedProfit  Float    @default(0)  // Calculated: totalAmount - totalExpenses
+  discountPercent Float    @default(0)
+  discountAmount  Float    @default(0)
+  amountInWords   String?
+  
+  // References
+  billNumber      String?
+  bblBillNumber   String?
+  challanNumber   String?
+  
+  // Dates - Three workflow dates for BRAC Bank
+  quotationDate   DateTime? @db.Date
+  challanDate     DateTime? @db.Date
+  billDate        DateTime? @db.Date
+  
+  // Notes
+  notes           String?  @db.Text
+  termsConditions String?  @db.Text
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Line items
+  items           JobItem[]
+  
+  // Expenses
+  expenses        JobExpense[]
+  
+  @@index([refNumber])
+  @@index([customerId])
+  @@index([status])
+}
+
+// Job Expense model for tracking job-related costs
+model JobExpense {
+  id              Int     @id @default(autoincrement())
+  jobId           Int
+  job             Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  // Expense details - 3 columns
+  description     String  // Column 1: Description of expense
+  category        String  // Column 2: Category (e.g., Material, Labor, Transport, Other)
+  amount          Float   // Column 3: Amount
+  
+  // Additional fields
+  date            DateTime? @db.Date
+  notes           String?  @db.Text
+  
+  // Status
+  isActive        Boolean  @default(true)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([jobId])
+}
+
+model JobItem {
+  id              Int     @id @default(autoincrement())
+  jobId           Int
+  job             Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  // Line item details
+  serialNumber    Int
+  workDescription String  @db.Text
+  details         String? @db.Text  // Details from inventory
+  quantity        Float
+  unit            String  @db.VarChar(20)
+  
+  // Size measurements (for Size Noter functionality)
+  widthFeet       Float?  @default(0)
+  widthInches     Float?  @default(0)
+  heightFeet      Float?  @default(0)
+  heightInches    Float?  @default(0)
+  calculatedSqft  Float?  @default(0)
+  autoCalculateSqft Boolean @default(false)  // Toggle to auto-calculate quantity from sqft
+  
+  // Store multiple measurements as JSON (legacy - kept for migration)
+  measurementsJson String? @db.Text  // JSON array of measurements
+  
+  // Pricing (denormalized for performance)
+  inventoryId     Int?    // Reference to inventory item
+  sku             String? @db.VarChar(50)
+  skuName         String? @db.VarChar(255)
+  
+  // Prices
+  unitPrice       Float   // Selling price per unit
+  buyPrice        Float   @default(0)  // Cost price at time of creation - for profit calculation
+  discountPercent Float   @default(0)
+  discountAmount  Float   @default(0)
+  
+  // Calculations
+  subtotal        Float
+  vatRate         Float   @default(0)
+  vatAmount       Float   @default(0)
+  total           Float
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relation to measurements
+  measurements    Measurement[]
+  
+  @@index([jobId])
+}
+
+model Measurement {
+  id              Int     @id @default(autoincrement())
+  jobItemId       Int
+  jobItem         JobItem @relation(fields: [jobItemId], references: [id], onDelete: Cascade)
+  
+  // Size measurements
+  widthFeet       Float   @default(0)
+  widthInches     Float   @default(0)
+  heightFeet      Float   @default(0)
+  heightInches    Float   @default(0)
+  quantity        Int     @default(1)  // Number of pieces with this measurement
+  calculatedSqft  Float   @default(0)  // Calculated square feet
+  
+  // Optional description for this measurement line
+  description     String? @db.VarChar(255)
+  
+  // Sort order for display
+  sortOrder       Int     @default(0)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([jobItemId])
+}
+
+model Settings {
+  id              Int     @id @default(autoincrement())
+  key             String  @unique @db.VarChar(100)
+  value           String  @db.Text
+  description     String? @db.VarChar(255)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Topsheet {
+  id              Int      @id @default(autoincrement())
+  topsheetNumber  String   @unique @db.VarChar(50)
+  date            DateTime @db.Date
+  
+  // Customer relation
+  customerId      Int?
+  customer        Customer? @relation(fields: [customerId], references: [id])
+  
+  // Customer info (denormalized for the topsheet)
+  customerName    String   @db.VarChar(255)
+  customerAddress1 String?  @db.VarChar(255)
+  customerAddress2 String?  @db.VarChar(255)
+  
+  // Job Detail for topsheet
+  jobDetail       String?  @db.Text
+  
+  // Status
+  status          String   @default("DRAFT") @db.VarChar(20)
+  
+  // Jobs assigned to this topsheet
+  jobs            Job[]
+  
+  // Notes
+  notes           String?  @db.Text
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([topsheetNumber])
+  @@index([date])
+  @@index([customerId])
+}
+
+// ============================================
+// SaaS User Management Models
+// ============================================
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  password        String    // Hashed password
+  name            String?
+  
+  // Company/Business Info
+  companyName     String?
+  phone          String?
+  address         String?  @db.Text
+  
+  // Role & Status
+  role            String    @default("USER") // ADMIN, USER, MANAGER
+  isActive        Boolean   @default(true)
+  emailVerified   DateTime?
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lastLoginAt     DateTime?
+  
+  // Subscriptions
+  subscriptions   Subscription[]
+  
+  @@index([email])
+}
+
+model SubscriptionPlan {
+  id              Int       @id @default(autoincrement())
+  name            String    // Free, Basic, Pro, Enterprise
+  slug            String    @unique // free, basic, pro, enterprise
+  description     String?   @db.Text
+  
+  // Pricing
+  price           Float     @default(0) // Monthly price
+  yearlyPrice     Float?    // Yearly price
+  currency        String    @default("USD")
+  
+  // Features
+  maxUsers        Int       @default(1)
+  maxCustomers    Int       @default(100)
+  maxJobs         Int       @default(1000)
+  maxInventory    Int       @default(500)
+  
+  // Feature flags
+  hasAdvancedReports  Boolean @default(false)
+  hasApiAccess     Boolean   @default(false)
+  hasCustomBranding Boolean  @default(false)
+  hasPrioritySupport Boolean @default(false)
+  
+  // Status
+  isActive        Boolean   @default(true)
+  isFeatured      Boolean   @default(false)
+  
+  // Order
+  sortOrder       Int       @default(0)
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Subscriptions
+  subscriptions   Subscription[]
+}
+
+model Subscription {
+  id              Int       @id @default(autoincrement())
+  
+  // User relation (one-to-one)
+  userId          Int       @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Plan relation
+  planId          Int
+  plan            SubscriptionPlan @relation(fields: [planId], references: [id])
+  
+  // Subscription details
+  status          String    @default("TRIAL") // TRIAL, ACTIVE, PAUSED, CANCELLED, EXPIRED
+  billingCycle    String    @default("MONTHLY") // MONTHLY, YEARLY
+  
+  // Dates
+  startDate       DateTime  @default(now())
+  endDate         DateTime?
+  trialEndDate    DateTime?
+  cancelledAt     DateTime?
+  
+  // Payment info (for future Stripe integration)
+  stripeCustomerId String?
+  stripeSubscriptionId String?
+  
+  // Usage tracking
+  usersCount      Int       @default(1)
+  customersCount  Int       @default(0)
+  jobsCount       Int       @default(0)
+  inventoryCount  Int       @default(0)
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+}

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Job Details &amp; History Tracking</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "primary-dark": "#0f4bc4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for timeline */
+        .timeline-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .timeline-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .timeline-scroll::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200 antialiased min-h-screen">
+<!-- Top Navigation (Simplified for context) -->
+<nav class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16">
+<div class="flex items-center">
+<div class="flex-shrink-0 flex items-center gap-2">
+<div class="h-8 w-8 rounded bg-primary flex items-center justify-center text-white">
+<span class="material-icons-outlined text-xl">grid_view</span>
+</div>
+<span class="font-bold text-xl tracking-tight text-slate-900 dark:text-white">Nexus<span class="text-primary">ERP</span></span>
+</div>
+<div class="hidden sm:ml-8 sm:flex sm:space-x-8">
+<a class="border-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 hover:text-slate-700 dark:hover:text-slate-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" href="#">Dashboard</a>
+<a class="border-primary text-primary dark:text-primary-400 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" href="#">Jobs &amp; Projects</a>
+<a class="border-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 hover:text-slate-700 dark:hover:text-slate-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" href="#">Finance</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-1 rounded-full text-slate-400 hover:text-slate-500 focus:outline-none">
+<span class="material-icons-outlined">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden relative">
+<img alt="User" class="h-full w-full object-cover" data-alt="User avatar placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC79YOlHYVTH70kloXDfCDPc3C9yMpiqbMewOGapE13Af8wHtwrA-XYi_5UIVCYrjqBXLwmisOxx0HB9ywWIEaNb5YoFVYNMAubSmJq05cIvi9hRXFxolpMj24HgbZLdBar0izgiBmAYLWtpktf_9SQfr1fS1I5tqfaVHja5s4Io1doxYu_bQN_iDoD5OdRn1NcDXGzCvvP30VfFdFUdqMmvFNAndtxg-4Xkssjbmxr3Os_tA7TJ_E58TR88j5TJGc40ACdSXv7AD0G"/>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-3">
+<a class="text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-icons-outlined text-xl">arrow_back</span>
+</a>
+<h1 class="text-2xl font-bold text-slate-900 dark:text-white">Job #JB-2023-894</h1>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary dark:bg-primary/20 dark:text-blue-300">
+                        Invoiced
+                    </span>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400 pl-8">Created on Oct 12, 2023 via Web Portal</p>
+</div>
+<div class="flex items-center gap-3 pl-8 md:pl-0">
+<button class="inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary" type="button">
+<span class="material-icons-outlined text-lg mr-2">print</span>
+                    Print All
+                </button>
+<button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors" type="button">
+<span class="material-icons-outlined text-lg mr-2">edit</span>
+                    Edit Job
+                </button>
+<button class="md:hidden inline-flex items-center p-2 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 bg-white hover:bg-slate-50" type="button">
+<span class="material-icons-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left Column: Details & Line Items -->
+<div class="lg:col-span-2 space-y-6">
+<!-- Info Cards Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Customer Information Card -->
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-base font-semibold leading-6 text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-icons-outlined text-primary text-lg">business</span>
+                                Customer Details
+                            </h3>
+<button class="text-primary hover:text-primary-dark text-sm font-medium">View Profile</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold dark:bg-indigo-900 dark:text-indigo-200">AC</div>
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Acme Corporation</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">ID: CUST-0092</p>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-2 text-sm">
+<div class="flex items-center gap-3 text-slate-600 dark:text-slate-300">
+<span class="material-icons-outlined text-slate-400 text-lg">person</span>
+<span>John Doe (Project Lead)</span>
+</div>
+<div class="flex items-center gap-3 text-slate-600 dark:text-slate-300">
+<span class="material-icons-outlined text-slate-400 text-lg">email</span>
+<a class="hover:underline" href="mailto:john@acme.com">john@acme.com</a>
+</div>
+<div class="flex items-center gap-3 text-slate-600 dark:text-slate-300">
+<span class="material-icons-outlined text-slate-400 text-lg">phone</span>
+<span>+1 (555) 019-2834</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Project Specs Card -->
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-base font-semibold leading-6 text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-icons-outlined text-primary text-lg">fact_check</span>
+                                Project Specs
+                            </h3>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between border-b border-slate-100 dark:border-slate-700 pb-2 last:border-0 last:pb-0">
+<span class="text-sm text-slate-500 dark:text-slate-400">Location</span>
+<span class="text-sm font-medium text-slate-900 dark:text-white text-right">123 Industrial Park, NY</span>
+</div>
+<div class="flex justify-between border-b border-slate-100 dark:border-slate-700 pb-2 last:border-0 last:pb-0">
+<span class="text-sm text-slate-500 dark:text-slate-400">Start Date</span>
+<span class="text-sm font-medium text-slate-900 dark:text-white">Oct 12, 2023</span>
+</div>
+<div class="flex justify-between border-b border-slate-100 dark:border-slate-700 pb-2 last:border-0 last:pb-0">
+<span class="text-sm text-slate-500 dark:text-slate-400">Due Date</span>
+<span class="text-sm font-medium text-slate-900 dark:text-white">Oct 24, 2023</span>
+</div>
+<div class="flex justify-between border-b border-slate-100 dark:border-slate-700 pb-2 last:border-0 last:pb-0">
+<span class="text-sm text-slate-500 dark:text-slate-400">PO Reference</span>
+<span class="text-sm font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">PO-9921</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Line Items Table Card -->
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+<div class="px-6 py-5 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<h3 class="text-base font-semibold leading-6 text-slate-900 dark:text-white">Line Items</h3>
+<div class="flex gap-2">
+<button class="text-xs font-medium text-slate-500 hover:text-primary dark:text-slate-400 border border-slate-200 dark:border-slate-600 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-700">Export CSV</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+<thead class="bg-slate-50 dark:bg-slate-900/50">
+<tr>
+<th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider" scope="col">Item &amp; Description</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider" scope="col">Qty</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider" scope="col">Rate</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider" scope="col">Tax</th>
+<th class="px-6 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider" scope="col">Total</th>
+</tr>
+</thead>
+<tbody class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+<tr>
+<td class="px-6 py-4">
+<div class="text-sm font-medium text-slate-900 dark:text-white">Consulting Services</div>
+<div class="text-sm text-slate-500 dark:text-slate-400">Senior Engineer Consultation (Site Survey)</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400 text-right">8 hr</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400 text-right">$150.00</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400 text-right">10%</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white text-right">$1,320.00</td>
+</tr>
+<tr>
+<td class="px-6 py-4">
+<div class="text-sm font-medium text-slate-900 dark:text-white">Server Setup</div>
+<div class="text-sm text-slate-500 dark:text-slate-400">Dedicated instance configuration and hardening</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400 text-right">1 unit</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400 text-right">$500.00</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400 text-right">10%</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white text-right">$550.00</td>
+</tr>
+<tr>
+<td class="px-6 py-4">
+<div class="text-sm font-medium text-slate-900 dark:text-white">Maintenance Fee (Quarterly)</div>
+<div class="text-sm text-slate-500 dark:text-slate-400">Q4 2023 Support Contract</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400 text-right">1 qtr</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400 text-right">$300.00</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400 text-right">10%</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white text-right">$330.00</td>
+</tr>
+</tbody>
+<tfoot class="bg-slate-50 dark:bg-slate-900/30">
+<tr>
+<td class="px-6 py-3 text-right text-sm font-medium text-slate-500 dark:text-slate-400" colspan="4">Subtotal</td>
+<td class="px-6 py-3 text-right text-sm font-medium text-slate-900 dark:text-white">$2,000.00</td>
+</tr>
+<tr>
+<td class="px-6 py-2 text-right text-sm font-medium text-slate-500 dark:text-slate-400" colspan="4">Total Tax (10%)</td>
+<td class="px-6 py-2 text-right text-sm font-medium text-slate-900 dark:text-white">$200.00</td>
+</tr>
+<tr class="border-t border-slate-200 dark:border-slate-700">
+<td class="px-6 py-4 text-right text-base font-bold text-slate-900 dark:text-white" colspan="4">Grand Total</td>
+<td class="px-6 py-4 text-right text-base font-bold text-primary">$2,200.00</td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+<!-- Notes Section (Optional but useful) -->
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+<h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-2">Internal Notes</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400">Client has requested expedited delivery for the server setup. Approved by management on Oct 13th.</p>
+</div>
+</div>
+<!-- Right Column: Timeline & History -->
+<div class="lg:col-span-1 space-y-6">
+<!-- Status Timeline Card -->
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col h-full">
+<div class="px-6 py-5 border-b border-slate-200 dark:border-slate-700">
+<h3 class="text-base font-semibold leading-6 text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-icons-outlined text-primary text-lg">history</span>
+                            Audit Trail
+                        </h3>
+</div>
+<div class="p-6 flex-1 timeline-scroll overflow-y-auto max-h-[600px]">
+<ul class="-mb-8" role="list">
+<!-- Timeline Item: Current -->
+<li>
+<div class="relative pb-8">
+<span aria-hidden="true" class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200 dark:bg-slate-700"></span>
+<div class="relative flex space-x-3">
+<div>
+<span class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center ring-8 ring-white dark:ring-slate-800 dark:bg-green-900">
+<span class="material-icons-outlined text-green-600 dark:text-green-300 text-sm">payments</span>
+</span>
+</div>
+<div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Payment Received <span class="text-green-600 ml-1 text-xs bg-green-50 dark:bg-green-900/30 px-1.5 py-0.5 rounded">Partial</span></p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Received $1,100 via Bank Transfer.</p>
+</div>
+<div class="text-right text-xs whitespace-nowrap text-slate-500 dark:text-slate-400">
+<time datetime="2023-10-16">2h ago</time>
+</div>
+</div>
+</div>
+</div>
+</li>
+<!-- Timeline Item -->
+<li>
+<div class="relative pb-8">
+<span aria-hidden="true" class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200 dark:bg-slate-700"></span>
+<div class="relative flex space-x-3">
+<div>
+<span class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center ring-8 ring-white dark:ring-slate-800">
+<span class="material-icons-outlined text-primary text-sm">send</span>
+</span>
+</div>
+<div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Invoice Sent</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Invoice <a class="text-primary hover:underline" href="#">#INV-001</a> emailed to client.</p>
+<div class="mt-2 flex items-center gap-2">
+<img alt="Sarah Manager" class="h-5 w-5 rounded-full" data-alt="User avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9SoV_MnKtDzUY2kz8DPQk6uxm_bHbg1hctCLVlFQLgx-K82s-qiRXAxsITx1ZDNjPJ0C5rYZL0GjvAXku8uRP3OtQHNqLmD76ozRe6fLhZoKssxTmfCBtszhjhLYKslgAVwGGICasiIwyVGHUNrelaGvaGRyZAgfgjVnWKz6oBFiwH0vGSmOnGWSuIWw1ybbvOc_IBWH-ic3xT-c2aHPYIVhVIFHVrzQMjp01NASfID82K_dEijhgxyBspt4N4MR4KLJAC06u-e1D"/>
+<span class="text-xs text-slate-500">by Sarah Manager</span>
+</div>
+</div>
+<div class="text-right text-xs whitespace-nowrap text-slate-500 dark:text-slate-400">
+<time datetime="2023-10-15">Yesterday</time>
+</div>
+</div>
+</div>
+</div>
+</li>
+<!-- Timeline Item -->
+<li>
+<div class="relative pb-8">
+<span aria-hidden="true" class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200 dark:bg-slate-700"></span>
+<div class="relative flex space-x-3">
+<div>
+<span class="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center ring-8 ring-white dark:ring-slate-800 dark:bg-slate-700">
+<span class="material-icons-outlined text-slate-500 text-sm dark:text-slate-300">description</span>
+</span>
+</div>
+<div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Challan Generated</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Delivery Challan #DC-894 created.</p>
+</div>
+<div class="text-right text-xs whitespace-nowrap text-slate-500 dark:text-slate-400">
+<time datetime="2023-10-14">Oct 14</time>
+</div>
+</div>
+</div>
+</div>
+</li>
+<!-- Timeline Item -->
+<li>
+<div class="relative pb-8">
+<span aria-hidden="true" class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200 dark:bg-slate-700"></span>
+<div class="relative flex space-x-3">
+<div>
+<span class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center ring-8 ring-white dark:ring-slate-800 dark:bg-green-900">
+<span class="material-icons-outlined text-green-600 text-sm dark:text-green-300">check_circle</span>
+</span>
+</div>
+<div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Quotation Approved</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Approved by John Client via Portal.</p>
+</div>
+<div class="text-right text-xs whitespace-nowrap text-slate-500 dark:text-slate-400">
+<time datetime="2023-10-13">Oct 13</time>
+</div>
+</div>
+</div>
+</div>
+</li>
+<!-- Timeline Item: Last -->
+<li>
+<div class="relative pb-8">
+<div class="relative flex space-x-3">
+<div>
+<span class="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center ring-8 ring-white dark:ring-slate-800 dark:bg-slate-700">
+<span class="material-icons-outlined text-slate-500 text-sm dark:text-slate-300">add</span>
+</span>
+</div>
+<div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Job Created</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">System initialization.</p>
+<div class="mt-2 flex items-center gap-2">
+<img alt="Admin" class="h-5 w-5 rounded-full" data-alt="User avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1EaXsIZKJh3h-LdlLdXSFwrmsHgySK1vI-L-Q6gGo7DY-LbCBmfvU2yEm02DRJzRNfflNjvfHfKJuB_mhvyYoF91wPWDRrlnIB3Lk7N64OBtTZQq-iFGWogTX5lbc0cACE0TuGbgv4WJZctyTb7Ve0HRjVtlHb7y7V1DlM4uttZjMMetAX-rKktvyF9VMWb9ZOM9lWQ_AqNixx16qkEAmsZLdXFy02cRlC2uMj2A1QmV1ftOZQry7MwjYnUx3KOPNtwlkaK_VM4jC"/>
+<span class="text-xs text-slate-500">by Admin User</span>
+</div>
+</div>
+<div class="text-right text-xs whitespace-nowrap text-slate-500 dark:text-slate-400">
+<time datetime="2023-10-12">Oct 12</time>
+</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="p-4 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-700 rounded-b-xl">
+<button class="w-full flex items-center justify-center px-4 py-2 border border-slate-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700">
+                            Add Note or Event
+                        </button>
+</div>
+</div>
+<!-- Generated Documents Card -->
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+<h3 class="text-base font-semibold leading-6 text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+<span class="material-icons-outlined text-primary text-lg">folder_open</span>
+                        Documents
+                    </h3>
+<ul class="space-y-3">
+<li class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors group cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
+<div class="flex items-center gap-3">
+<span class="material-icons-outlined text-red-500 text-2xl">picture_as_pdf</span>
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Invoice #INV-001</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">124 KB • Oct 15</p>
+</div>
+</div>
+<span class="material-icons-outlined text-slate-400 group-hover:text-primary transition-colors">download</span>
+</li>
+<li class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors group cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
+<div class="flex items-center gap-3">
+<span class="material-icons-outlined text-red-500 text-2xl">picture_as_pdf</span>
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Quotation #QT-894</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">98 KB • Oct 12</p>
+</div>
+</div>
+<span class="material-icons-outlined text-slate-400 group-hover:text-primary transition-colors">download</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+</body></html>
