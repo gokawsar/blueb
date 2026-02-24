@@ -1,18 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { ApiResponse, Customer } from '@/lib/types';
+import { getUserIdFromRequest } from '@/lib/auth';
 
 // GET all customers
 export async function GET(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const searchParams = request.nextUrl.searchParams;
         const search = searchParams.get('search') || '';
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '20');
         const skip = (page - 1) * limit;
 
-        const where = search
-            ? {
+        const where = {
+            userId,
+            ...(search ? {
                 OR: [
                     { name: { contains: search } },
                     { email: { contains: search } },
@@ -21,8 +32,8 @@ export async function GET(request: NextRequest) {
                     { addressLine1: { contains: search } },
                     { addressLine2: { contains: search } },
                 ],
-            }
-            : {};
+            } : {}),
+        };
 
         const [customers, total] = await Promise.all([
             prisma.customer.findMany({
@@ -59,6 +70,15 @@ export async function GET(request: NextRequest) {
 // POST create new customer
 export async function POST(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const body = await request.json();
 
         const customer = await prisma.customer.create({
@@ -73,6 +93,7 @@ export async function POST(request: NextRequest) {
                 location: body.location,
                 vatNumber: body.vatNumber,
                 notes: body.notes,
+                userId,
             },
         });
 
@@ -92,11 +113,20 @@ export async function POST(request: NextRequest) {
 // PUT update customer
 export async function PUT(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const body = await request.json();
         const { id, ...data } = body;
 
         const customer = await prisma.customer.update({
-            where: { id: Number(id) },
+            where: { id: Number(id), userId },
             data,
         });
 
@@ -115,6 +145,15 @@ export async function PUT(request: NextRequest) {
 // DELETE customer
 export async function DELETE(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 
@@ -127,7 +166,7 @@ export async function DELETE(request: NextRequest) {
 
         // Hard delete - actually remove from database
         await prisma.customer.delete({
-            where: { id: Number(id) },
+            where: { id: Number(id), userId },
         });
 
         return NextResponse.json(

@@ -1,16 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getUserIdFromRequest } from '@/lib/auth';
 
 // GET - Fetch all settings or single setting
 export async function GET(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const searchParams = request.nextUrl.searchParams;
         const key = searchParams.get('key');
 
         if (key) {
             // Get single setting
             const setting = await prisma.settings.findUnique({
-                where: { key },
+                where: { key, userId },
             });
 
             if (!setting) {
@@ -27,8 +37,10 @@ export async function GET(request: NextRequest) {
             });
         }
 
-        // Get all settings
-        const settings = await prisma.settings.findMany();
+        // Get all settings for this user
+        const settings = await prisma.settings.findMany({
+            where: { userId }
+        });
 
         const settingsObject: Record<string, unknown> = {};
         settings.forEach(s => {
@@ -51,6 +63,15 @@ export async function GET(request: NextRequest) {
 // POST - Create or update a setting
 export async function POST(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const body = await request.json();
         const { key, value, description } = body;
 
@@ -63,7 +84,7 @@ export async function POST(request: NextRequest) {
 
         // Upsert - create if not exists, update if exists
         const setting = await prisma.settings.upsert({
-            where: { key },
+            where: { key, userId },
             update: {
                 value: JSON.stringify(value),
                 description,
@@ -73,6 +94,7 @@ export async function POST(request: NextRequest) {
                 key,
                 value: JSON.stringify(value),
                 description,
+                userId,
             },
         });
 
@@ -93,6 +115,15 @@ export async function POST(request: NextRequest) {
 // DELETE - Delete a setting
 export async function DELETE(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const searchParams = request.nextUrl.searchParams;
         const key = searchParams.get('key');
 
@@ -104,7 +135,7 @@ export async function DELETE(request: NextRequest) {
         }
 
         await prisma.settings.delete({
-            where: { key },
+            where: { key, userId },
         });
 
         return NextResponse.json({

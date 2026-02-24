@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { parseCSVToInventory, inventoryToCSV } from '@/lib/utils';
+import { getUserIdFromRequest } from '@/lib/auth';
 
 // GET all inventory items
 export async function GET(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const searchParams = request.nextUrl.searchParams;
         const search = searchParams.get('search') || '';
         const type = searchParams.get('type') || '';
@@ -12,7 +22,7 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get('limit') || '50');
         const skip = (page - 1) * limit;
 
-        const where: Record<string, unknown> = {};
+        const where: Record<string, unknown> = { userId };
 
         if (search) {
             where.OR = [
@@ -56,6 +66,15 @@ export async function GET(request: NextRequest) {
 // POST create new inventory item or bulk import
 export async function POST(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const contentType = request.headers.get('content-type');
 
         // Check if it's a CSV import
@@ -85,6 +104,7 @@ export async function POST(request: NextRequest) {
                     stockQuantity: item.stockQuantity || 0,
                     category: item.category,
                     brand: item.brand,
+                    userId,
                 })),
                 skipDuplicates: true,
             });
@@ -118,6 +138,7 @@ export async function POST(request: NextRequest) {
                 category: body.category,
                 brand: body.brand,
                 remarks: body.remarks,
+                userId,
             },
         });
 
@@ -137,11 +158,20 @@ export async function POST(request: NextRequest) {
 // PUT update inventory item
 export async function PUT(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const body = await request.json();
         const { id, ...data } = body;
 
         const item = await prisma.inventory.update({
-            where: { id: Number(id) },
+            where: { id: Number(id), userId },
             data,
         });
 
@@ -160,6 +190,15 @@ export async function PUT(request: NextRequest) {
 // DELETE inventory item
 export async function DELETE(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 
@@ -172,7 +211,7 @@ export async function DELETE(request: NextRequest) {
 
         // Hard delete - actually remove from database
         await prisma.inventory.delete({
-            where: { id: Number(id) },
+            where: { id: Number(id), userId },
         });
 
         return NextResponse.json(

@@ -1,17 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getUserIdFromRequest } from '@/lib/auth';
 
 export const maxDuration = 60;
 
 // GET - Fetch dashboard data including jobs by month and topsheet profits
 export async function GET(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const searchParams = request.nextUrl.searchParams;
         const year = parseInt(searchParams.get('year') || new Date().getFullYear().toString());
         
         // Fetch all jobs with their items and expenses for the current year
         const jobs = await prisma.job.findMany({
             where: {
+                userId,
                 date: {
                     gte: new Date(year, 0, 1),
                     lte: new Date(year, 11, 31, 23, 59, 59),
@@ -31,6 +42,7 @@ export async function GET(request: NextRequest) {
         // Fetch all topsheets with their jobs for the current year (all statuses)
         const allTopsheets = await prisma.topsheet.findMany({
             where: {
+                userId,
                 date: {
                     gte: new Date(year, 0, 1),
                     lte: new Date(year, 11, 31, 23, 59, 59),

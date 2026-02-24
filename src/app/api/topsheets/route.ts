@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getUserIdFromRequest } from '@/lib/auth';
 
 // Increase payload size limit
 export const maxDuration = 60;
@@ -7,12 +8,21 @@ export const maxDuration = 60;
 // GET - Fetch all topsheets or single topsheet
 export async function GET(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 
         if (id) {
             const topsheet = await prisma.topsheet.findUnique({
-                where: { id: parseInt(id) },
+                where: { id: parseInt(id), userId },
                 include: {
                     jobs: {
                         include: {
@@ -36,6 +46,7 @@ export async function GET(request: NextRequest) {
 
         // Get all topsheets with jobs for total amount calculation
         const topsheets = await prisma.topsheet.findMany({
+            where: { userId },
             include: {
                 _count: {
                     select: { jobs: true }
@@ -88,6 +99,15 @@ export async function GET(request: NextRequest) {
 // POST - Create new topsheet
 export async function POST(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const body = await request.json();
         const { topsheetNumber, date, customerId, notes, jobIds } = body;
 
@@ -95,9 +115,9 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
         }
 
-        // Check if topsheetNumber already exists
+        // Check if topsheetNumber already exists for this user
         const existing = await prisma.topsheet.findUnique({
-            where: { topsheetNumber }
+            where: { topsheetNumber, userId }
         });
 
         if (existing) {
@@ -106,7 +126,7 @@ export async function POST(request: NextRequest) {
 
         // Fetch customer details
         const customer = await prisma.customer.findUnique({
-            where: { id: customerId }
+            where: { id: customerId, userId }
         });
 
         if (!customer) {
@@ -128,6 +148,7 @@ export async function POST(request: NextRequest) {
                 jobDetail: jobDetail,
                 notes: notes || null,
                 status: 'DRAFT',
+                userId,
                 ...(jobIds && jobIds.length > 0 && {
                     jobs: {
                         connect: jobIds.map((id: number) => ({ id }))
@@ -149,6 +170,15 @@ export async function POST(request: NextRequest) {
 // PUT - Update topsheet
 export async function PUT(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const body = await request.json();
         const { id, topsheetNumber, date, customerId, notes, status, jobIds } = body;
 
@@ -161,6 +191,7 @@ export async function PUT(request: NextRequest) {
             const existing = await prisma.topsheet.findFirst({
                 where: { 
                     topsheetNumber,
+                    userId,
                     NOT: { id }
                 }
             });
@@ -180,7 +211,7 @@ export async function PUT(request: NextRequest) {
         // Handle customer change
         if (customerId) {
             const customer = await prisma.customer.findUnique({
-                where: { id: customerId }
+                where: { id: customerId, userId }
             });
 
             if (customer) {
@@ -197,21 +228,21 @@ export async function PUT(request: NextRequest) {
         if (jobIds !== undefined) {
             // Disconnect all current jobs
             await prisma.job.updateMany({
-                where: { topsheetId: id },
+                where: { topsheetId: id, userId },
                 data: { topsheetId: null }
             });
 
             // Connect new jobs
             if (jobIds.length > 0) {
                 await prisma.job.updateMany({
-                    where: { id: { in: jobIds } },
+                    where: { id: { in: jobIds }, userId },
                     data: { topsheetId: id }
                 });
             }
         }
 
         const topsheet = await prisma.topsheet.update({
-            where: { id },
+            where: { id, userId },
             data: updateData,
             include: {
                 jobs: true
@@ -228,6 +259,15 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete topsheet
 export async function DELETE(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 
@@ -237,13 +277,13 @@ export async function DELETE(request: NextRequest) {
 
         // First, unlink all jobs from this topsheet
         await prisma.job.updateMany({
-            where: { topsheetId: parseInt(id) },
+            where: { topsheetId: parseInt(id), userId },
             data: { topsheetId: null }
         });
 
         // Delete the topsheet
         await prisma.topsheet.delete({
-            where: { id: parseInt(id) }
+            where: { id: parseInt(id), userId }
         });
 
         return NextResponse.json({ success: true, message: 'Topsheet deleted successfully' });
