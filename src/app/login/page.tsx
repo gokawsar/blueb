@@ -42,8 +42,12 @@ export default function LoginPage() {
       const result = await response.json();
 
       if (result.success) {
+        // Store in localStorage for client-side access
         localStorage.setItem('user', JSON.stringify(result.data));
-        router.push('/');
+        // Small delay to ensure cookie is set before redirect
+        setTimeout(() => {
+            router.push('/');
+        }, 100);
       } else {
         setError(result.error || 'Login failed');
       }
@@ -82,8 +86,12 @@ export default function LoginPage() {
       const result = await response.json();
 
       if (result.success) {
+        // Store in localStorage for client-side access
         localStorage.setItem('user', JSON.stringify(result.data));
-        router.push('/');
+        // Small delay to ensure cookie is set before redirect
+        setTimeout(() => {
+            router.push('/');
+        }, 100);
       } else {
         setError(result.error || 'Registration failed');
       }

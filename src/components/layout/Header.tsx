@@ -25,9 +25,25 @@ export default function Header({ onMenuClick, title = 'Dashboard Overview' }: He
         }
     }, []);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        try {
+            // Call logout API to clear cookie
+            await fetch('/api/auth', {
+                method: 'PUT'
+            });
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+        
+        // Clear local storage
         localStorage.removeItem('user');
         setUser(null);
+        
+        // Clear cookie
+        if (typeof document !== 'undefined') {
+            document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        }
+        
         router.push('/login');
     };
 

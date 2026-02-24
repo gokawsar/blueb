@@ -43,9 +43,43 @@ interface DashboardData {
 export default function DashboardPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<string>(months[new Date().getMonth()]);
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+
+    // Check authentication on mount
+    useEffect(() => {
+        const checkAuth = () => {
+            // Check cookie first
+            const cookies = document.cookie.split(';');
+            let userFromCookie = null;
+            
+            for (const cookie of cookies) {
+                const parts = cookie.trim().split('=');
+                if (parts[0] === 'user') {
+                    try {
+                        userFromCookie = JSON.parse(decodeURIComponent(parts.slice(1).join('=')));
+                    } catch (e) {
+                        console.error('Failed to parse user cookie:', e);
+                    }
+                    break;
+                }
+            }
+
+            // Fallback to localStorage
+            const userFromStorage = localStorage.getItem('user');
+            
+            if (userFromCookie || userFromStorage) {
+                setIsAuthenticated(true);
+            } else {
+                // Not authenticated, redirect to login
+                router.push('/login');
+            }
+        };
+        
+        checkAuth();
+    }, [router]);
 
     // Fetch dashboard data
     const fetchDashboardData = useCallback(async () => {
@@ -71,11 +105,11 @@ export default function DashboardPage() {
     const currentMonthData: MonthlyProfit = dashboardData?.monthlyProfit[selectedMonth] || { revenue: 0, expenses: 0, profit: 0, topsheets: [], allTopsheets: [], jobs: [] };
     const currentMonthJobs = dashboardData?.jobsByMonth[selectedMonth] || { count: 0, totalAmount: 0, jobs: [] };
 
-    if (loading) {
+    if (loading || !isAuthenticated) {
         return (
             <DashboardLayout title="Dashboard Overview">
                 <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-                    Loading dashboard data...
+                    {loading ? 'Loading dashboard data...' : 'Redirecting to login...'}
                 </div>
             </DashboardLayout>
         );
