@@ -318,7 +318,7 @@ model Topsheet {
 model User {
   id              Int       @id @default(autoincrement())
   email           String    @unique
-  password        String    // Hashed password
+  password        String?   // Hashed password - null if using Google OAuth
   name            String?
   
   // Company/Business Info
@@ -331,9 +331,17 @@ model User {
   isActive        Boolean   @default(true)
   emailVerified   DateTime?
   
+  // Google OAuth
+  googleId        String?   // Google account ID
+  googleEmail     String?   // Google email (may differ from primary email)
+  
+  // Two-Factor Authentication
+  twoFactorEnabled Boolean  @default(false)
+  twoFactorSecret String?   // Encrypted TOTP secret
+  
   // Timestamps
   createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  updatedAt      DateTime  @updatedAt
   lastLoginAt     DateTime?
   
   // Multi-tenant data relations
