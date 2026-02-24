@@ -2,17 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { generateRefNumber, numberToWords, calculateLineItem } from '@/lib/utils';
 import { JobItem, Measurement } from '@/lib/types';
+import { getUserIdFromRequest } from '@/lib/auth';
 
 // GET all jobs or single job by ID
 export async function GET(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const searchParams = request.nextUrl.searchParams;
         const id = searchParams.get('id');
 
         // If ID is provided, return single job
         if (id) {
             const job = await prisma.job.findUnique({
-                where: { id: Number(id) },
+                where: { id: Number(id), userId },
                 include: {
                     customer: true,
                     topsheet: true,
@@ -98,7 +108,7 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get('limit') || '20');
         const skip = (page - 1) * limit;
 
-        const where: Record<string, unknown> = {};
+        const where: Record<string, unknown> = { userId };
 
         if (search) {
             where.OR = [
@@ -184,6 +194,15 @@ export async function GET(request: NextRequest) {
 // POST create new job with line items
 export async function POST(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const body = await request.json();
 
         const {
@@ -262,6 +281,7 @@ export async function POST(request: NextRequest) {
                     billNumber: billNumber || null,
                     bblBillNumber: bblBillNumber || null,
                     challanNumber: challanNumber || null,
+                    userId, // Multi-tenant: link to user
                     items: {
                         create: calculatedItems.map((item: JobItem) => ({
                             serialNumber: item.serialNumber,
@@ -356,6 +376,15 @@ export async function POST(request: NextRequest) {
 // PUT update job with line items
 export async function PUT(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const body = await request.json();
         const {
             id,
@@ -376,7 +405,7 @@ export async function PUT(request: NextRequest) {
 
         // Get the existing job to preserve customerId if not provided
         const existingJob = await prisma.job.findUnique({
-            where: { id: Number(id) },
+            where: { id: Number(id), userId },
             select: { customerId: true, subtotal: true, totalVat: true, totalAmount: true, discountPercent: true, discountAmount: true }
         });
 
@@ -502,7 +531,7 @@ export async function PUT(request: NextRequest) {
             }
 
             const updatedJob = await tx.job.update({
-                where: { id: Number(id) },
+                where: { id: Number(id), userId },
                 data: updateData,
                 include: {
                     customer: true,
@@ -557,6 +586,15 @@ export async function PUT(request: NextRequest) {
 // DELETE job
 export async function DELETE(request: NextRequest) {
     try {
+        const userId = getUserIdFromRequest(request);
+        
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+        
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 
@@ -569,7 +607,7 @@ export async function DELETE(request: NextRequest) {
 
         // Delete job (items will be cascade deleted)
         await prisma.job.delete({
-            where: { id: Number(id) },
+            where: { id: Number(id), userId },
         });
 
         return NextResponse.json(

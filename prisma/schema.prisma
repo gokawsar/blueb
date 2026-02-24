@@ -24,8 +24,15 @@ model Customer {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
+  // Multi-tenancy
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
   jobs        Job[]
   topsheets   Topsheet[]
+  
+  @@index([userId])
 }
 
 model Inventory {
@@ -80,9 +87,14 @@ model Inventory {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   
+  // Multi-tenancy
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
   @@index([sku])
   @@index([name])
   @@index([itemType])
+  @@index([userId])
 }
 
 model Job {
@@ -131,6 +143,10 @@ model Job {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   
+  // Multi-tenancy
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
   // Line items
   items           JobItem[]
   
@@ -140,6 +156,7 @@ model Job {
   @@index([refNumber])
   @@index([customerId])
   @@index([status])
+  @@index([userId])
 }
 
 // Job Expense model for tracking job-related costs
@@ -247,6 +264,12 @@ model Settings {
   description     String? @db.VarChar(255)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  
+  // Multi-tenancy
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
 }
 
 model Topsheet {
@@ -278,9 +301,14 @@ model Topsheet {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   
+  // Multi-tenancy
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
   @@index([topsheetNumber])
   @@index([date])
   @@index([customerId])
+  @@index([userId])
 }
 
 // ============================================
@@ -307,6 +335,13 @@ model User {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   lastLoginAt     DateTime?
+  
+  // Multi-tenant data relations
+  customers       Customer[]
+  jobs            Job[]
+  topsheets       Topsheet[]
+  inventory       Inventory[]
+  settings        Settings[]
   
   // Subscriptions
   subscriptions   Subscription[]
