@@ -293,7 +293,7 @@ export default function DashboardPage() {
                         {/* Month Profit List */}
                         <div className="p-4 space-y-2 max-h-96 overflow-y-auto">
                             {months.map((month) => {
-                                const monthProfit: MonthlyProfit = dashboardData?.monthlyProfit[month] || { revenue: 0, expenses: 0, profit: 0, topsheets: [], allTopsheets: [] };
+                                const monthProfit: MonthlyProfit = dashboardData?.monthlyProfit[month] || { revenue: 0, expenses: 0, profit: 0, topsheets: [], allTopsheets: [], jobs: [] };
                                 const isSelected = selectedMonth === month;
                                 const hasSubmitted = monthProfit.topsheets && monthProfit.topsheets.length > 0;
                                 const hasAll = monthProfit.allTopsheets && monthProfit.allTopsheets.length > 0;
